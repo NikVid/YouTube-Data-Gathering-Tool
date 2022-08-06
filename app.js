@@ -29,9 +29,9 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(__dirname + '/public'));
 //
 async function download(data, searchQuery, res) {
-  console.log(data);
+  // console.log(data);
 
-  
+
   res.header('Content-Type', 'text/csv');
   res.attachment("Youtube_Data_" + searchQuery + ".csv");
   res.send(data);
@@ -254,11 +254,9 @@ app.get("/download:keyword", async function(req, res) {
 
 
   console.log("loadedPages.length", loadedPages.length);
-  if (loadedPages.length < totalResults) {
-    console.log("we zitten in de if");
-    console.log("loadedPagesg length", loadedPages.length);
-    for (let o = loadedPages.length; o < 20; o++) {
-      console.log("we zitten in de for loop");
+
+// tokenlist daarin staan de nextpage tokens
+for(let o; o< tokenlist.length;o++){
       try {
         const searchResponse = await youtubeSearch.search.list({
           part: "id, snippet",
@@ -300,10 +298,9 @@ app.get("/download:keyword", async function(req, res) {
       } catch (err) {
         console.log(err);
       }
+}
 
-    }
 
-  }
   // loadedPages = loadedPages.map(item=>{
   //    if(!(typeof item==="object")){
   //     return item
