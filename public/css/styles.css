@@ -1,0 +1,91 @@
+body {
+  background-color: #eee;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+
+}
+
+td {
+white-space: nowrap;
+word-break:normal;
+overflow: auto;
+}
+td>*,td ::target-text {
+  max-height: 9rem;
+}
+img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 140px;
+}
+
+img:hover {
+  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}
+
+.search {
+  position: relative;
+  box-shadow: 0 0 40px rgba(51, 51, 51, .1);
+}
+
+.search input {
+  height: 60px;
+  text-indent: 25px;
+  border: 2px solid #d6d4d4;
+}
+
+.navbar {
+  background-color: #e3f2fd;
+  height: 8rem;
+}
+
+.main_title {
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  margin: 0 auto;
+}
+
+h6 {
+  text-align: center;
+}
+
+.navbar-brand {
+  padding-left: 6rem;
+}
+
+.search input:focus {
+  box-shadow: none;
+  border: 2px solid blue;
+}
+
+.search .fa-search {
+  position: absolute;
+  top: 20px;
+  left: 16px;
+}
+p{
+  line-height: 0.5rem;
+}
+.search button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  height: 50px;
+  width: 110px;
+  background: blue;
+}
+
+footer {
+  position: absolute;
+  bottom: 1.8rem;
+  width: 100%;
+}

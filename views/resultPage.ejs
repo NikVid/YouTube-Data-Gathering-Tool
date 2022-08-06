@@ -1,0 +1,75 @@
+<%- include("partials/header"); %>
+
+<%- console.log("currentPage",currentPage, "token",nextToken, "token1",nextToken[1]); %>
+<form class="" action="/download" method="post">
+  <button type="submit" name="button">DOWNLOOI</button>
+</form>
+
+<table class="table table-striped table-hover">
+<thead>
+  <tr>
+    <th scope="col">Video Title</th>
+    <th scope="col">Thumbnail</th>
+    <th scope="col">Channel Title</th>
+    <th scope="col">Video Description</th>
+    <th scope="col">Publish date</th>
+    <th scope="col">url</th>
+    <th scope="col">Views</th>
+    <th scope="col">Likes</th>
+    <th scope="col">Comments</th>
+    <th scope="col">Channel Description</th>
+    <th scope="col">Categories</th>
+    <th scope="col">Language</th>
+    <th scope="col">Tags</th>
+    <th scope="col">Duration</th>
+  </tr>
+</thead>
+<tbody>
+  <% if(searchObject?.length>0){  %>
+  <% for(let x=0; x<size;x++){ %>
+  <tr>
+    <td> <%= searchObject[x]?.snippet?.title %> </td>
+    <td><img src="<%= searchObject[x]?.snippet?.thumbnails?.high?.url %>" alt="thumbnail"></td>
+    <td><%= searchObject[x]?.snippet?.channelTitle %> </td>
+    <td><%= searchObject[x]?.snippet?.description %> </td>
+    <td><%= searchObject[x]?.snippet.publishTime %> </td>
+    <td><%= videoUrl + videoIds[x]%></td>
+    <td><%= videoObject[x]?.statistics.viewCount %></td>
+    <td><%= videoObject[x]?.statistics.likeCount %></td>
+    <td><%= videoObject[x]?.statistics?.commentCount %></td>
+    <td><%= channelObject[x]?.snippet?.description %></td>
+    <td><%= videoObject[x]?.topicDetails?.topicCategories%></td>
+    <td><%= videoObject[x]?.snippet?.defaultAudioLanguage %></td>
+    <td><%= videoObject[x]?.snippet?.tags %></td>
+    <td><%= videoObject[x]?.contentDetails?.duration %></td>
+  </tr>
+  <% };} %>
+
+</tbody>
+
+</table>
+<nav aria-label="Page navigation example">
+
+    <ul class="pagination">
+      <!-- Only clickable when its not 0 -->
+      <li class="page-item"><a class="page-link" href="/search/<%- nextToken[currentPage-1] %>">Previous</a></li>
+      <!-- for size of nextToken we will load one of these -->
+
+      <!-- <li class="page-item active"><a class="page-link" href="/search">1</a></li>
+      <li class="page-item active"><a class="page-link" href="/search/<%- nextToken[0] %>">2</a></li>
+      <li class="page-item active"><a class="page-link" href="/search/<%- nextToken[1] %>">3</a></li> -->
+      <!-- for loop ends here -->
+
+      <!-- Only clickable when its not the last one -->
+      <li class="page-item"><a class="page-link" href= "/search/<%- nextToken[currentPage+1]%>">Next</a></li>
+    </ul>
+
+</nav
+
+
+
+
+
+
+
+<%- include("partials/footer");  %>
