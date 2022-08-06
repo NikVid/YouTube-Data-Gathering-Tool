@@ -11,7 +11,6 @@ const _ = require("lodash");
 const {
   convertArrayToCSV
 } = require('convert-array-to-csv');
-let videoIDs = [];
 const converter = require('convert-array-to-csv');
 const {
   creatCsvFile,
@@ -56,6 +55,8 @@ let videoObject;
 let dataObject;
 let maxVisibleRequests;
 let maxKeys;
+let channelIDs =[];
+let videoIDs = [];
 
 let searchQuery;
 
@@ -65,7 +66,7 @@ let searchQuery;
 // const apiKey = "AIzaSyAcyfNE1hvPTkZsATNggbaNIsh2yh-HOi0";
 // const apiKey = "AIzaSyAYqWAY34gE8kGlBz6fdItByDabY_m72q0";
 // const apiKey= "AIzaSyC2R6kmg26jBj9ufwKn25-TstyKszFv-Z4";
-const apiKey ="AIzaSyCRS0u_wawIONwzWyxUrSGOqaUwPQxCdAQ";
+const apiKey ="AIzaSyCvEiJdSPz1oQExYT4tAukiQd56LiPE3vw";
 const apiUrl = "https://www.googleapis.com/youtube/v3";
 
 const youtubeSearch = google.youtube({
@@ -94,7 +95,6 @@ app.post("/", function(req, res) {
   res.redirect("/search");
 });
 
-
 app.get("/search", async function(req, res, next) {
   try {
     const searchResponse = await youtubeSearch.search.list({
@@ -104,7 +104,7 @@ app.get("/search", async function(req, res, next) {
       maxResults: resultsPerPage
     });
     videoIDs = searchResponse.data?.items.map((item) => item.id.videoId);
-    const channelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
+    channelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
     searchObject = searchResponse.data?.items;
     nextPageToken = searchResponse.data?.nextPageToken;
     totalResults = searchResponse.data?.pageInfo.totalResults;
@@ -156,6 +156,10 @@ app.get("/search", async function(req, res, next) {
         maxResults: resultsPerPage
       });
       tokenList.push(searchResponse.data.nextPageToken);
+      const tempVideoIDs  = searchResponse.data?.items.map((item) => item.id.videoId);
+      const tempChannelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
+      videoIDs.concat(tempVideoIDs);
+      channelIDs.concat(tempChannelIDs);
     }
     console.log("tokenlist", tokenList);
   } catch (err) {
@@ -174,7 +178,6 @@ app.get("/search", async function(req, res, next) {
     videoUrl: videoUrl
   });
 });
-
 
 app.get("/search/:key", async function(req, res) {
   let currentKey = req.params.key;
@@ -200,14 +203,13 @@ app.get("/search/:key", async function(req, res) {
         type: "video",
         pageToken: tokenList[result]
       });
-      const videoIDs = searchResponse.data?.items.map((item) => item.id.videoId);
-      const channelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
+      let searchVideoIDs = searchResponse.data?.items.map((item) => item.id.videoId);
+      let searchChannelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
       searchObject = searchResponse.data?.items;
-      nextPageToken = searchResponse.data?.nextPageToken;
       try {
         const videoResponse = await youtubeSearch.videos.list({
           part: "snippet, statistics, topicDetails, contentDetails",
-          id: videoIDs.join(",")
+          id: searchVideoIDs.join(",")
         });
         videoObject = videoResponse.data?.items;
       } catch (err) {
@@ -216,7 +218,7 @@ app.get("/search/:key", async function(req, res) {
       try {
         const channelResponse = await youtubeSearch.channels.list({
           part: "snippet",
-          id: channelIDs.join(",")
+          id: searchChannelIDs.join(",")
         });
         channelObject = channelResponse.data?.items;
       } catch (err) {
@@ -235,7 +237,9 @@ app.get("/search/:key", async function(req, res) {
       videoObject: videoObject,
       channelObject: channelObject,
       currentPage: result,
-      nextToken: tokenList
+      nextToken: tokenList,
+      videoUrl: videoUrl,
+      videoIds: videoIDs
     });
   }
 });
@@ -253,53 +257,31 @@ app.get("/about", function(req, res) {
 app.get("/download:keyword", async function(req, res) {
   console.log("redirecten is gelukt");
 
-
-  console.log("loadedPages.length", loadedPages.length);
-
-// tokenlist daarin staan de nextpage tokens
-for(let o; o< tokenlist.length;o++){
-      try {
-        const searchResponse = await youtubeSearch.search.list({
-          part: "id, snippet",
-          q: searchQuery,
-          type: "video",
-          maxResults: resultsPerPage,
-          nextToken: tokenList[o]
-        });
-        const videoIDs = searchResponse.data?.items.map((item) => item.id.videoId);
-        const channelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
+  for(let y=0;y<videoIDs.length;y++){
         searchObject = searchResponse.data?.items;
         nextPageToken = searchResponse.data?.nextPageToken;
         try {
           const videoResponse = await youtubeSearch.videos.list({
             part: "snippet, statistics, topicDetails, contentDetails",
-            id: videoIDs.join(",")
+            id: videoIDs[y]
           });
           videoObject = videoResponse.data?.items;
-          // console.log("videoobject", videoObject);
         } catch (err) {
-          console.log("err1");
           res.redirect("/search/error/" + encodeURIComponent(err.message));
-          return;
         }
         try {
           const channelResponse = await youtubeSearch.channels.list({
             part: "snippet",
-            id: channelIDs.join(",")
+            id: channelIDs[y]
           });
-          channelObject = channelResponse.data?.items ?? [];
-        } catch (err2) {
-          console.log("err2");
+          channelObject = channelResponse.data?.items;
+        } catch (err) {
           res.redirect("/search/error/" + encodeURIComponent(err.message));
           return;
         }
-        // console.log("push naar loadedPages");
         loadedPages.push([searchObject[o]?.snippet?.title || "", searchObject[o]?.snippet?.thumbnails?.high?.url || "", searchObject[o]?.snippet?.channelTitle || "", searchObject[o]?.snippet?.description || "", searchObject[o]?.snippet.publishTime || "", videoUrl + videoIDs[o], videoObject[o]?.statistics.viewCount || "", videoObject[o]?.statistics.likeCount || "", videoObject[o]?.statistics?.commentCount || "disabled", channelObject[o]?.snippet?.description || "", videoObject[o]?.topicDetails?.topicCategories?.join(",") || "", videoObject[o]?.snippet?.defaultAudioLanguage || "not available", videoObject[o]?.snippet?.tags?.join(",") || "", videoObject[o]?.contentDetails?.duration || ""]);
 
-      } catch (err) {
-        console.log(err);
       }
-}
 
 
   // loadedPages = loadedPages.map(item=>{
