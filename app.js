@@ -64,7 +64,8 @@ let searchQuery;
 // const apiKey = "AIzaSyBD0eqh2x-H0XCxT0jicpNVTuBwsTOHw4Q";
 // const apiKey = "AIzaSyAcyfNE1hvPTkZsATNggbaNIsh2yh-HOi0";
 // const apiKey = "AIzaSyAYqWAY34gE8kGlBz6fdItByDabY_m72q0";
-const apiKey= "AIzaSyC2R6kmg26jBj9ufwKn25-TstyKszFv-Z4";
+// const apiKey= "AIzaSyC2R6kmg26jBj9ufwKn25-TstyKszFv-Z4";
+const apiKey ="AIzaSyCRS0u_wawIONwzWyxUrSGOqaUwPQxCdAQ";
 const apiUrl = "https://www.googleapis.com/youtube/v3";
 
 const youtubeSearch = google.youtube({
