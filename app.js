@@ -355,6 +355,7 @@ app.get("/download:keyword", async function(req, res) {
 
 
 //The router channel
-app.listen(3000, function() {
-  console.log("app running on port 3000");
+const server = app.listen(process.env.PORT || 5000, () => {
+  const port = server.address().port;
+  
 });
