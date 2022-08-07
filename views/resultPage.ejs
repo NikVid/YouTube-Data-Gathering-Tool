@@ -47,14 +47,9 @@
 
 </table>
 <nav aria-label="Page navigation example" class="mx-1">
-
     <ul class="pagination">
-      <!-- Only clickable when its not 0 -->
       <li class="page-item"><a class="page-link" href="/search/<%- nextToken[currentPage-1] %>">Previous</a></li>
-
-      <!-- Only clickable when its not the last one -->
-
-      <li  class="page-item"><a class="page-link" href= "/search/<%- nextToken[currentPage+1]%>">Next</a></li> 
+      <li  class="page-item"><a class="page-link" href= "/search/<%- nextToken[currentPage+1]%>">Next</a></li>
     </ul>
   <p class="mx-4">Page <%= currentPage+1 %> of <%= nextToken.length %></p>
 </nav>

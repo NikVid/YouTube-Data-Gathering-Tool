@@ -22,7 +22,6 @@ td>*,td ::target-text {
   max-height: 9rem;
 }
 
-
 .img_result {
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -74,6 +73,7 @@ h6 {
   top: 20px;
   left: 16px;
 }
+
 p{
   line-height: 0.5rem;
 }
