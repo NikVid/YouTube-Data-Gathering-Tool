@@ -4,6 +4,7 @@
   "description": "Search for youtube video's and geth their metadata such as likes, topics, video language, channel name etc.",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
