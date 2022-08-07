@@ -25,10 +25,11 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(__dirname + '/public'));
 
 //Initialize  key variable for googleapis
+let apiKey= "";
 let youtubeSearch = google.youtube({
   version: "v3",
   auth: apiKey
-
+});
 
 //Creates a file with the headers, writes the data into the csv file and downloads it
 async function download(data, searchQuery, res) {
@@ -51,7 +52,7 @@ let result = 0;
 let tokenList = [];
 let nextPageToken = "";
 let channelObject;
-// let searchObject; REMOVE THIS IF THE WEBSITE WORKS AT 08-08-2022
+let searchObject;
 let videoObject;
 let dataObject;
 let finalFile = [];
@@ -60,7 +61,7 @@ let videoIDs = [];
 let tempChannelIDs;
 let tempVideoIDs;
 let searchQuery;
-let apiKey= "";
+
 
 //Home page
 app.get("/", function(req, res) {
@@ -112,9 +113,9 @@ app.get("/search", async function(req, res, next) {
     //Putting the channel id's into arrays and then joining them with the main array of the channel id's , which then can be used for downloading
     tempChannelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
     channelIDs = channelIDs.concat([tempChannelIDs]);
-    // searchObject = searchResponse.data?.items; REMOVE THIS IF THE WEBSITE WORKS AT 08-08-2022
+    searchObject = searchResponse.data?.items;
     //Next page token is important to get more results
-    nextPageToken = searchResponse.data?.nextPageToken;\
+    nextPageToken = searchResponse.data?.nextPageToken;
     //storing the token in a list
     tokenList.push(nextPageToken);
     //Call the YouTube api for information about the videos that were received at the searchquery. We use the list of video id's to request the information
@@ -223,7 +224,7 @@ app.get("/search/:key", async function(req, res) {
       //We save the new id's we got in the new list using the nextPageToken
       let searchVideoIDs = searchResponse.data?.items.map((item) => item.id.videoId);
       let searchChannelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
-      // searchObject = searchResponse.data?.items; REMOVE THIS IF THE WEBSITE WORKS AT 08-08-2022
+      searchObject = searchResponse.data?.items;
       //Now doing the video request on the YouTube api again
       try {
         const videoResponse = await youtubeSearch.videos.list({
