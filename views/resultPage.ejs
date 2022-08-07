@@ -2,7 +2,7 @@
 
 <%- console.log("currentPage",currentPage, "token",nextToken, "token1",nextToken[1]); %>
 <form class="" action="/download" method="post">
-  <button type="submit" name="button">DOWNLOOI</button>
+  <button type="submit" class="btn btn-lg btn-primary"name="button">Download</button>
 </form>
 
 <table class="table table-striped table-hover">
@@ -25,15 +25,16 @@
   </tr>
 </thead>
 <tbody>
-  <% if(searchObject?.length>0){  %>
+
+
   <% for(let x=0; x<size;x++){ %>
   <tr>
-    <td> <%= searchObject[x]?.snippet?.title %> </td>
-    <td><img src="<%= searchObject[x]?.snippet?.thumbnails?.high?.url %>" alt="thumbnail"></td>
-    <td><%= searchObject[x]?.snippet?.channelTitle %> </td>
-    <td><%= searchObject[x]?.snippet?.description %> </td>
-    <td><%= searchObject[x]?.snippet.publishTime %> </td>
-    <td><%= videoUrl + videoIds[x]%></td>
+    <td> <%= videoObject[x]?.snippet?.title %> </td>
+    <td><img src="<%= videoObject[x]?.snippet?.thumbnails?.high?.url %>" alt="thumbnail"></td>
+    <td><%= channelObject[x]?.snippet?.title %> </td>
+    <td><%= videoObject[x]?.snippet?.description %> </td>
+    <td><%= videoObject[x]?.snippet.publishedAt %> </td>
+    <td><%= videoUrl + videoIds[0][x]%></td>
     <td><%= videoObject[x]?.statistics.viewCount %></td>
     <td><%= videoObject[x]?.statistics.likeCount %></td>
     <td><%= videoObject[x]?.statistics?.commentCount %></td>
@@ -43,7 +44,7 @@
     <td><%= videoObject[x]?.snippet?.tags %></td>
     <td><%= videoObject[x]?.contentDetails?.duration %></td>
   </tr>
-  <% };} %>
+  <% } %>
 
 </tbody>
 

@@ -37,7 +37,7 @@ async function download(data, searchQuery, res) {
 }
 //
 
-
+let downloadFille=[];
 const csv = ["Video Title", "Thumbnail", "Channel Title","Video Description", "Publish Date","Url", "Views", "Likes", "Comments", "Channel Description", "Categories","Language","Tags","Duration"];
 const videoUrl = "https://www.youtube.com/watch?v=";
 let totalResults;
@@ -53,11 +53,11 @@ let channelObject;
 let searchObject;
 let videoObject;
 let dataObject;
-let maxVisibleRequests;
 let maxKeys;
 let channelIDs =[];
 let videoIDs = [];
-
+let tempChannelIDs;
+let tempVideoIDs;
 let searchQuery;
 
 // const apiKey = "AIzaSyBS699Q19K70lVJ1zzKlaE_NU4zF8IpvZE";
@@ -66,8 +66,9 @@ let searchQuery;
 // const apiKey = "AIzaSyAcyfNE1hvPTkZsATNggbaNIsh2yh-HOi0";
 // const apiKey = "AIzaSyAYqWAY34gE8kGlBz6fdItByDabY_m72q0";
 // const apiKey= "AIzaSyC2R6kmg26jBj9ufwKn25-TstyKszFv-Z4";
-const apiKey ="AIzaSyCvEiJdSPz1oQExYT4tAukiQd56LiPE3vw";
-const apiUrl = "https://www.googleapis.com/youtube/v3";
+const apiKey = "AIzaSyCaqxbqmx94vEDJsKKMBjMza1P6mhMCeaQ";
+// const apiKey ="AIzaSyCXB9ABuaBpQPGmYj6SecDg22O72LN2SJk";
+ const apiUrl = "https://www.googleapis.com/youtube/v3";
 
 const youtubeSearch = google.youtube({
   version: "v3",
@@ -76,7 +77,6 @@ const youtubeSearch = google.youtube({
 
 app.get("/", function(req, res) {
   res.render("home", {});
-
 
 
   // for(let u=0;u<loadedPages.length;u++){
@@ -89,7 +89,6 @@ app.get("/", function(req, res) {
 app.post("/", function(req, res) {
   searchQuery = req.body.searchQuery;
   resultsPerPage = req.body.results;
-  maxVisibleRequests = req.body.maximum_results;
   console.log(searchQuery, resultsPerPage);
 
   res.redirect("/search");
@@ -103,8 +102,10 @@ app.get("/search", async function(req, res, next) {
       type: "video",
       maxResults: resultsPerPage
     });
-    videoIDs = searchResponse.data?.items.map((item) => item.id.videoId);
-    channelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
+    tempVideoIDs = searchResponse.data?.items.map((item) => item.id.videoId);
+    videoIDs = videoIDs.concat([tempVideoIDs]);
+    tempChannelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
+    channelIDs = channelIDs.concat([tempChannelIDs]);
     searchObject = searchResponse.data?.items;
     nextPageToken = searchResponse.data?.nextPageToken;
     totalResults = searchResponse.data?.pageInfo.totalResults;
@@ -139,12 +140,8 @@ app.get("/search", async function(req, res, next) {
 
   tokenList.push(nextPageToken);
   size = resultsPerPage;
-  if (totalResults < maxVisibleRequests) {
-    maxVisibleRequests = totalResults;
 
-  }
-  maxKeys = maxVisibleRequests / resultsPerPage;
-  console.log("maxKeys", maxKeys, "maxVisibleRequests", maxVisibleRequests, "resultsPerPage", resultsPerPage);
+  maxKeys = 10;
   try {
 
     for (let i = 0; i < maxKeys; i++) {
@@ -153,29 +150,33 @@ app.get("/search", async function(req, res, next) {
         q: searchQuery,
         type: "video",
         pageToken: tokenList[i],
-        maxResults: resultsPerPage
+        maxResults: 50
       });
       tokenList.push(searchResponse.data.nextPageToken);
-      const tempVideoIDs  = searchResponse.data?.items.map((item) => item.id.videoId);
-      const tempChannelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
-      videoIDs.concat(tempVideoIDs);
-      channelIDs.concat(tempChannelIDs);
+      tempVideoIDs  = searchResponse.data?.items.map((item) => item.id.videoId);
+      tempChannelIDs = searchResponse.data?.items.map((item) => item.snippet.channelId);
+      console.log("videoIds old",videoIDs);
+      console.log("tempvideo ids",tempVideoIDs);
+      videoIDs = videoIDs.concat([tempVideoIDs]);
+      channelIDs= channelIDs.concat([tempChannelIDs]);
+      console.log("videoids new",videoIDs);
+
     }
     console.log("tokenlist", tokenList);
   } catch (err) {
     res.redirect("/search/error/" + encodeURIComponent(err.message));
 
   }
-  console.log(videoIDs);
   res.render("resultPage", {
     size: size,
-    searchObject: searchObject,
+
     videoObject: videoObject,
     channelObject: channelObject,
     nextToken: tokenList,
     currentPage: currentPage,
     videoIds: videoIDs,
     videoUrl: videoUrl
+
   });
 });
 
@@ -189,11 +190,12 @@ app.get("/search/:key", async function(req, res) {
     console.log("paginas geladen tot nu:", loadedPages.length);
     res.render("resultPage", {
       size: size,
-      searchObject: loadedPages[result][0],
-      videoObject: loadedPages[result][1],
-      channelObject: loadedPages[result][2],
+      videoObject: loadedPages[result][0],
+      channelObject: loadedPages[result][1],
       currentPage: result,
-      nextToken: tokenList
+      nextToken: tokenList,
+      videoUrl: videoUrl,
+      videoIds: videoIDs
     });
   } else {
     try {
@@ -230,10 +232,9 @@ app.get("/search/:key", async function(req, res) {
       return;
     }
 
-    loadedPages.push([searchObject, videoObject, channelObject]);
+    loadedPages.push([ videoObject, channelObject]);
     res.render("resultPage", {
       size: size,
-      searchObject: searchObject,
       videoObject: videoObject,
       channelObject: channelObject,
       currentPage: result,
@@ -254,12 +255,13 @@ app.get("/about", function(req, res) {
 
   res.render("", )
 });
-app.get("/download:keyword", async function(req, res) {
+
+
+app.get("/download:keyword", async function(req, res,next) {
   console.log("redirecten is gelukt");
 
-  for(let y=0;y<videoIDs.length;y++){
-        searchObject = searchResponse.data?.items;
-        nextPageToken = searchResponse.data?.nextPageToken;
+
+  for(let y=0;y<tokenList.length;y++){
         try {
           const videoResponse = await youtubeSearch.videos.list({
             part: "snippet, statistics, topicDetails, contentDetails",
@@ -276,24 +278,31 @@ app.get("/download:keyword", async function(req, res) {
           });
           channelObject = channelResponse.data?.items;
         } catch (err) {
-          res.redirect("/search/error/" + encodeURIComponent(err.message));
-          return;
-        }
-        loadedPages.push([searchObject[o]?.snippet?.title || "", searchObject[o]?.snippet?.thumbnails?.high?.url || "", searchObject[o]?.snippet?.channelTitle || "", searchObject[o]?.snippet?.description || "", searchObject[o]?.snippet.publishTime || "", videoUrl + videoIDs[o], videoObject[o]?.statistics.viewCount || "", videoObject[o]?.statistics.likeCount || "", videoObject[o]?.statistics?.commentCount || "disabled", channelObject[o]?.snippet?.description || "", videoObject[o]?.topicDetails?.topicCategories?.join(",") || "", videoObject[o]?.snippet?.defaultAudioLanguage || "not available", videoObject[o]?.snippet?.tags?.join(",") || "", videoObject[o]?.contentDetails?.duration || ""]);
+          // res.redirect("/search/error/" + encodeURIComponent(err.message));
+          next(err);
 
+        }
+loadedPages.push([ videoObject, channelObject]);
+for (let x =0;x<videoIDs[y].length;x++){
+downloadFille.push([loadedPages[y][0][x]?.snippet?.title || "", loadedPages[y][0][x]?.snippet?.thumbnails?.high?.url || "", loadedPages[y][1][x]?.snippet?.title || "", loadedPages[y][0][x]?.snippet?.description || "", loadedPages[y][0][x]?.snippet.publishedAt || "", videoUrl + videoIDs[y][x], loadedPages[y][0][x]?.statistics.viewCount || "", loadedPages[y][0][x]?.statistics.likeCount || "", loadedPages[y][0][x]?.statistics?.commentCount || "disabled", loadedPages[y][1][x]?.snippet?.description || "", loadedPages[y][0][x]?.topicDetails?.topicCategories?.join(",") || "", loadedPages[y][0][x]?.snippet?.defaultAudioLanguage || "not available", loadedPages[y][0][x]?.snippet?.tags?.join(",") || "", loadedPages[y][0][x]?.contentDetails?.duration || ""]);
+}
       }
 
+      //
+// loadedPages[y][0][x]?  y= voor de hoeveelste token pagina, 0 is voor searchobject en x is voor de item
+//}
 
-  // loadedPages = loadedPages.map(item=>{
+  // p = loadedPages.map(item=>{
   //    if(!(typeof item==="object")){
   //     return item
   //   }
   //   return item.join(",")
   // })
 
-  console.log("loadedPages", loadedPages);
-
-  const csvFromArrayOfArrays = await convertArrayToCSV([csv, ...loadedPages], {
+  console.log("downloadFile", downloadFille);
+downloadFille.flat();
+console.log("downloadfile but flat like small titties", downloadFille);
+  const csvFromArrayOfArrays = await convertArrayToCSV([csv, ...downloadFille], {
     csv,
     separator: ';'
   });
