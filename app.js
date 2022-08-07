@@ -343,7 +343,7 @@ app.get("/download:keyword", async function(req, res) {
   console.log("downloadFile", finalFile);
   //Flatten the array so it can be iterated over by the npm package
   finalFile.flat();
-  console.log("downloadfile but flat like small titties", finalFile);
+  console.log("downloadfile", finalFile);
   //Turning the array into csv format with the npm package
   const csvFromArrayOfArrays = await convertArrayToCSV([csv, ...finalFile], {
     csv,
