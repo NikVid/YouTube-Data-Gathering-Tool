@@ -13,7 +13,7 @@ const {
   convertArrayToCSV
 } = require('convert-array-to-csv');
 const converter = require('convert-array-to-csv');
-let PORT = 3000 || process.env.PORT;
+let PORT = process.env.PORT;
 const fs = require("fs");
 const path = require('path');
 
@@ -355,7 +355,7 @@ app.get("/download:keyword", async function(req, res) {
 
 
 //The router channel
-const server = app.listen(process.env.PORT || 5000, () => {
+const server = app.listen(process.env.PORT, () => {
 
 
 });
