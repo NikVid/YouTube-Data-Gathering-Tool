@@ -1,5 +1,5 @@
 body {
-  background-color: #eee;
+  background-color: rgb(255, 229, 229);
   font-family: "Poppins", sans-serif;
   font-weight: 300;
   position: relative;
@@ -21,14 +21,16 @@ overflow: auto;
 td>*,td ::target-text {
   max-height: 9rem;
 }
-img {
+
+
+.img_result {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
   width: 140px;
 }
 
-img:hover {
+.img_result:hover {
   box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
 }
 
@@ -44,7 +46,7 @@ img:hover {
 }
 
 .navbar {
-  background-color: #e3f2fd;
+  background-color: #A36360;
   height: 8rem;
 }
 

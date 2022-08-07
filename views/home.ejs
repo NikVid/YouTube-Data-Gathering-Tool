@@ -1,32 +1,29 @@
 <%- include("partials/header") %>
-<h1 class="d-flex justify-content-center py-4">YouTube datamine</h1>
+<div class="container-lg pt-4 pb-4"">
+
+
+<h1 class="d-flex justify-content-center py-4">Youtube Data Gathering Tool</h1>
+</div>
 <div class="container">
-
                     <div class="row  d-flex justify-content-center ">
-
                       <div class="col-md-8">
-
                         <div class="search">
                           <form class="form-group" action="/" method="post">
-
-
                           <i class="fa fa-search"></i>
-                          <input type="text" name ="searchQuery" class="form-control " placeholder="Have a question? Ask Now">
-                          <label for="results">Results per page</label>
-                          <select name="results" >
+                          <input type="text" name ="searchQuery" class="form-control " placeholder="Search">
+                          <input type="text" name ="apiKey" class="form-control " placeholder="Api key">
+                          <!-- <label for="results">Results per page</label> -->
+                          <!-- <select name="results" >
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
                           </select>
-                          
+                           -->
                           <button name ="searchButton" class="btn btn-primary">Search</button>
                           </form>
                         </div>
-
                       </div>
-
                     </div>
                 </div>
-
 <%- include("partials/footer") %>

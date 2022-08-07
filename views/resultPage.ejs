@@ -2,7 +2,7 @@
 
 <%- console.log("currentPage",currentPage, "token",nextToken, "token1",nextToken[1]); %>
 <form class="" action="/download" method="post">
-  <button type="submit" class="btn btn-lg btn-primary"name="button">Download</button>
+  <button type="submit" class="btn btn-lg btn-primary pos-left  mx-1 my-1"name="button">Download</button>
 </form>
 
 <table class="table table-striped table-hover">
@@ -25,16 +25,14 @@
   </tr>
 </thead>
 <tbody>
-
-
   <% for(let x=0; x<size;x++){ %>
   <tr>
     <td> <%= videoObject[x]?.snippet?.title %> </td>
-    <td><img src="<%= videoObject[x]?.snippet?.thumbnails?.high?.url %>" alt="thumbnail"></td>
+    <td><img class="img_result" src="<%= videoObject[x]?.snippet?.thumbnails?.high?.url %>" alt="thumbnail"></td>
     <td><%= channelObject[x]?.snippet?.title %> </td>
     <td><%= videoObject[x]?.snippet?.description %> </td>
     <td><%= videoObject[x]?.snippet.publishedAt %> </td>
-    <td><%= videoUrl + videoIds[0][x]%></td>
+    <td><a href="<%= videoUrl + videoIds[0][x]%>"></a> <%= videoUrl + videoIds[0][x]%></td>
     <td><%= videoObject[x]?.statistics.viewCount %></td>
     <td><%= videoObject[x]?.statistics.likeCount %></td>
     <td><%= videoObject[x]?.statistics?.commentCount %></td>
@@ -45,27 +43,21 @@
     <td><%= videoObject[x]?.contentDetails?.duration %></td>
   </tr>
   <% } %>
-
 </tbody>
 
 </table>
-<nav aria-label="Page navigation example">
+<nav aria-label="Page navigation example" class="mx-1">
 
     <ul class="pagination">
       <!-- Only clickable when its not 0 -->
       <li class="page-item"><a class="page-link" href="/search/<%- nextToken[currentPage-1] %>">Previous</a></li>
-      <!-- for size of nextToken we will load one of these -->
-
-      <!-- <li class="page-item active"><a class="page-link" href="/search">1</a></li>
-      <li class="page-item active"><a class="page-link" href="/search/<%- nextToken[0] %>">2</a></li>
-      <li class="page-item active"><a class="page-link" href="/search/<%- nextToken[1] %>">3</a></li> -->
-      <!-- for loop ends here -->
 
       <!-- Only clickable when its not the last one -->
-      <li class="page-item"><a class="page-link" href= "/search/<%- nextToken[currentPage+1]%>">Next</a></li>
-    </ul>
 
-</nav
+      <li  class="page-item"><a class="page-link" href= "/search/<%- nextToken[currentPage+1]%>">Next</a></li> 
+    </ul>
+  <p class="mx-4">Page <%= currentPage+1 %> of <%= nextToken.length %></p>
+</nav>
 
 
 
