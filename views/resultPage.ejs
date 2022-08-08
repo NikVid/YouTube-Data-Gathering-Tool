@@ -1,5 +1,5 @@
 <%- include("partials/header"); %>
- 
+
 <%- console.log("currentPage",currentPage, "token",nextToken, "token1",nextToken[1]); %>
 <form class="" action="/download" method="post">
   <button type="submit" class="btn btn-lg btn-primary pos-left  mx-1 my-1"name="button">Download</button>
@@ -13,11 +13,12 @@
     <th scope="col">Channel Title</th>
     <th scope="col">Video Description</th>
     <th scope="col">Publish date</th>
-    <th scope="col">url</th>
+    <th scope="col">Video URL</th>
     <th scope="col">Views</th>
     <th scope="col">Likes</th>
     <th scope="col">Comments</th>
     <th scope="col">Channel Description</th>
+    <th scope="col">Subscribers</th>
     <th scope="col">Categories</th>
     <th scope="col">Language</th>
     <th scope="col">Tags</th>
@@ -37,6 +38,7 @@
     <td><%= videoObject[x]?.statistics.likeCount %></td>
     <td><%= videoObject[x]?.statistics?.commentCount %></td>
     <td><%= channelObject[x]?.snippet?.description %></td>
+    <td><%= channelObject[x]?.statistics?.subscriberCount %></td>
     <td><%= videoObject[x]?.topicDetails?.topicCategories%></td>
     <td><%= videoObject[x]?.snippet?.defaultAudioLanguage %></td>
     <td><%= videoObject[x]?.snippet?.tags %></td>

@@ -38,7 +38,7 @@ async function download(data, searchQuery, res) {
 }
 
 //all variables
-const csv = ["Video Title", "Thumbnail", "Channel Title", "Video Description", "Publish Date", "Url", "Views", "Likes", "Comments", "Channel Description", "Categories", "Language", "Tags", "Duration"];
+const csv = ["Video Title", "Thumbnail", "Channel Title", "Video Description", "Publish Date", "Url", "Views", "Likes", "Comments", "Channel Description", "Subscribers","Topics","Category id","Country", "Language", "Tags", "Duration"];
 const videoUrl = "https://www.youtube.com/watch?v=";
 const maxKeys=10;
 const apiUrl = "https://www.googleapis.com/youtube/v3";
@@ -136,7 +136,7 @@ app.get("/search", async function(req, res, next) {
     //Making a request to the YouTube api for the channel information of the videos
     try {
       const channelResponse = await youtubeSearch.channels.list({
-        part: "snippet", //That is all we need
+        part: "snippet, statistics", //That is all we need
         id: channelIDs.join(",") //we use the list of channel id's
       });
       channelObject = channelResponse.data?.items ?? [];
@@ -242,7 +242,7 @@ app.get("/search/:key", async function(req, res) {
         //Now doing the channel request on the YouTube api again
       try {
         const channelResponse = await youtubeSearch.channels.list({
-          part: "snippet",
+          part: "snippet, statistics",
           id: searchChannelIDs.join(",")
         });
         channelObject = channelResponse.data?.items;
@@ -322,7 +322,7 @@ app.get("/download:keyword", async function(req, res) {
     try {
       //Doing the channel request to the YouTube Api server
       const channelResponse = await youtubeSearch.channels.list({
-        part: "snippet",
+        part: "snippet, statistics",
         id: channelIDs[y]
       });
       channelObject = channelResponse.data?.items;
@@ -337,7 +337,7 @@ app.get("/download:keyword", async function(req, res) {
     loadedPages.push([videoObject, channelObject]);
     //Going through every video so we can add the data to be downloaded into a new array
     for (let x = 0; x < videoIDs[y].length; x++) {
-      finalFile.push([loadedPages[y][0][x]?.snippet?.title || "", loadedPages[y][0][x]?.snippet?.thumbnails?.high?.url || "", loadedPages[y][1][x]?.snippet?.title || "", loadedPages[y][0][x]?.snippet?.description || "", loadedPages[y][0][x]?.snippet.publishedAt || "", videoUrl + videoIDs[y][x], loadedPages[y][0][x]?.statistics.viewCount || "", loadedPages[y][0][x]?.statistics.likeCount || "", loadedPages[y][0][x]?.statistics?.commentCount || "disabled", loadedPages[y][1][x]?.snippet?.description || "", loadedPages[y][0][x]?.topicDetails?.topicCategories?.join(",") || "", loadedPages[y][0][x]?.snippet?.defaultAudioLanguage || "not available", loadedPages[y][0][x]?.snippet?.tags?.join(",") || "", loadedPages[y][0][x]?.contentDetails?.duration || ""]);
+      finalFile.push([loadedPages[y][0][x]?.snippet?.title || "", loadedPages[y][0][x]?.snippet?.thumbnails?.high?.url || "", loadedPages[y][1][x]?.snippet?.title || "", loadedPages[y][0][x]?.snippet?.description || "", loadedPages[y][0][x]?.snippet.publishedAt || "", videoUrl + videoIDs[y][x], loadedPages[y][0][x]?.statistics.viewCount || "", loadedPages[y][0][x]?.statistics.likeCount || "", loadedPages[y][0][x]?.statistics?.commentCount || "disabled", loadedPages[y][1][x]?.snippet?.description || "",loadedPages[y][1][x]?.statistics?.subscriberCount || "", loadedPages[y][0][x]?.topicDetails?.topicCategories?.join(",") || "", loadedPages[y][0][x]?.snippet.categoryId || "", loadedPages[y][1][x]?.snippet.country || "", loadedPages[y][0][x]?.snippet?.defaultAudioLanguage || "not available", loadedPages[y][0][x]?.snippet?.tags?.join(",") || "", loadedPages[y][0][x]?.contentDetails?.duration || ""]);
     }
   }
 
