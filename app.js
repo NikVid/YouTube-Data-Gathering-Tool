@@ -353,9 +353,6 @@ app.get("/download:keyword", async function(req, res) {
   download(csvFromArrayOfArrays, searchQuery, res);
 });
 
-
-//The router channel
-const server = app.listen(process.env.PORT, () => {
-
-
-});
+app.listen(PORT || 3000,function(){
+  console.log("server running");
+})
