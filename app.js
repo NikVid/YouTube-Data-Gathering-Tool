@@ -354,5 +354,6 @@ app.get("/download:keyword", async function(req, res) {
 });
 
 app.listen(PORT || 3000,function(){
+  console.log('The value of PORT is:', process.env.PORT);
   console.log("server running");
 })
