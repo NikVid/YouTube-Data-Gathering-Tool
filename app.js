@@ -44,7 +44,7 @@ const videoUrl = "https://www.youtube.com/watch?v=";
 const maxKeys=10;
 const apiUrl = "https://www.googleapis.com/youtube/v3";
 
-let errorCode;
+
 let loadedPages = [];
 let size = 5;
 let currentPage = 0;
@@ -70,7 +70,6 @@ app.get("/", function(req, res) {
 
   //Clear all important variables
   finalFile = [];
-   errorCode="";
    loadedPages = [];
    currentPage = 0;
    result = 0;
@@ -78,6 +77,9 @@ app.get("/", function(req, res) {
    nextPageToken = "";
    searchQuery="";
    apiKey= "";
+   tokenList=[];
+   videoIDs=[];
+   channelIDs=[];
 });
 
 //Executed when you press the search button on the home page
@@ -275,7 +277,7 @@ app.get("/search/:key", async function(req, res) {
 //This is the error page from error.ejs with the error in the url
 app.get("/search/error/:error", function(req, res) {
   //We read the code and save it
-  errorCode = req.params.error;
+  let errorCode = req.params.error;
   //We render the error.ejs page and show the errorcode
   res.render("error", {
     errorCode: errorCode
