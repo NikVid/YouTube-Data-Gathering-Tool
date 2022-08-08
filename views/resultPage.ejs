@@ -28,21 +28,21 @@
 <tbody>
   <% for(let x=0; x<size;x++){ %>
   <tr>
-    <td> <%= videoObject[x]?.snippet?.title %> </td>
+    <td> <%= videoObject[x]?.snippet?.title || "NaN" %> </td>
     <td><img class="img_result" src="<%= videoObject[x]?.snippet?.thumbnails?.high?.url %>" alt="thumbnail"></td>
-    <td><%= channelObject[x]?.snippet?.title %> </td>
-    <td><%= videoObject[x]?.snippet?.description %> </td>
-    <td><%= videoObject[x]?.snippet.publishedAt %> </td>
+    <td><%= channelObject[x]?.snippet?.title || "NaN" %> </td>
+    <td><%= videoObject[x]?.snippet?.description || "NaN" %> </td>
+    <td><%= videoObject[x]?.snippet.publishedAt || "NaN" %> </td>
     <td><a href="<%= videoUrl + videoIds[0][x]%>"></a> <%= videoUrl + videoIds[0][x]%></td>
-    <td><%= videoObject[x]?.statistics.viewCount %></td>
-    <td><%= videoObject[x]?.statistics.likeCount %></td>
-    <td><%= videoObject[x]?.statistics?.commentCount %></td>
-    <td><%= channelObject[x]?.snippet?.description %></td>
-    <td><%= channelObject[x]?.statistics?.subscriberCount %></td>
-    <td><%= videoObject[x]?.topicDetails?.topicCategories%></td>
-    <td><%= videoObject[x]?.snippet?.defaultAudioLanguage %></td>
-    <td><%= videoObject[x]?.snippet?.tags %></td>
-    <td><%= videoObject[x]?.contentDetails?.duration %></td>
+    <td><%= videoObject[x]?.statistics.viewCount || "NaN" %></td>
+    <td><%= videoObject[x]?.statistics.likeCount || "NaN" %></td>
+    <td><%= videoObject[x]?.statistics?.commentCount || "NaN" %></td>
+    <td><%= channelObject[x]?.snippet?.description || "NaN" %></td>
+    <td><%= channelObject[x]?.statistics?.subscriberCount || "NaN" %></td>
+    <td><%= videoObject[x]?.topicDetails?.topicCategories || "NaN"%></td>
+    <td><%= videoObject[x]?.snippet?.defaultAudioLanguage || "NaN" %></td>
+    <td><%= videoObject[x]?.snippet?.tags || "NaN" %></td>
+    <td><%= videoObject[x]?.contentDetails?.duration || "NaN" %></td>
   </tr>
   <% } %>
 </tbody>
